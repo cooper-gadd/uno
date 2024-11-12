@@ -12,7 +12,7 @@ const fontSans = FontSans({
 
 export const metadata: Metadata = {
   title: "Uno",
-  description: "The card game Uno, but online.",
+  description: "The card game, but online.",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 

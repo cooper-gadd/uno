@@ -1,24 +1,24 @@
-import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
+  CardDescription,
+  CardContent,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export default function HomePage() {
   return (
     <div className="container flex flex-1 flex-col gap-8 p-4 md:p-8">
-      <div className="space-y-4 py-8 text-center">
+      <div className="space-y-4 text-center">
         <h1 className="text-4xl font-extrabold tracking-tight lg:text-7xl">
           UNO
         </h1>
         <p className="text-xl text-muted-foreground">
-          The card game, but online.
+          The classic card game reimagined for the digital age
         </p>
         <Button size="lg" className="mt-4">
-          Play Now!
+          Play Now - It&apos;s Free!
         </Button>
       </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -61,8 +61,6 @@ export default function HomePage() {
             </ul>
           </CardContent>
         </Card>
-
-        {/* Fair Play */}
         <Card>
           <CardHeader>
             <CardTitle>Fair Play System</CardTitle>
@@ -102,6 +100,12 @@ export default function HomePage() {
             </ul>
           </CardContent>
         </Card>
+      </div>
+      <div className="py-8 text-center">
+        <h2 className="mb-4 text-2xl font-bold">Ready to Play?</h2>
+        <Button variant="default" size="lg">
+          Sign Up Free
+        </Button>
       </div>
     </div>
   );

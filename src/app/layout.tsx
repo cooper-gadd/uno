@@ -1,8 +1,9 @@
 import "@/styles/globals.css";
 
-import { Inter as FontSans } from "next/font/google";
-import { type Metadata } from "next";
 import { cn } from "@/lib/utils";
+import { GeistMono } from "geist/font/mono";
+import { GeistSans } from "geist/font/sans";
+import { type Metadata } from "next";
 import { ThemeProvider } from "./_components/theme-provider";
 
 export const metadata: Metadata = {
@@ -10,11 +11,6 @@ export const metadata: Metadata = {
   description: "The card game Uno, but online.",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
-
-const fontSans = FontSans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
 
 export default function RootLayout({
   children,
@@ -24,7 +20,8 @@ export default function RootLayout({
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable,
+          GeistSans.variable,
+          GeistMono.variable,
         )}
       >
         <ThemeProvider

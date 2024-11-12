@@ -1,10 +1,14 @@
 import "@/styles/globals.css";
 
 import { cn } from "@/lib/utils";
-import { GeistMono } from "geist/font/mono";
-import { GeistSans } from "geist/font/sans";
+import { Inter as FontSans } from "next/font/google";
 import { type Metadata } from "next";
 import { ThemeProvider } from "./_components/theme-provider";
+
+const fontSans = FontSans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
 
 export const metadata: Metadata = {
   title: "Uno",
@@ -20,8 +24,7 @@ export default function RootLayout({
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
-          GeistSans.variable,
-          GeistMono.variable,
+          fontSans.variable,
         )}
       >
         <ThemeProvider

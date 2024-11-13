@@ -116,3 +116,45 @@ export const card = pgTable(
 export type Card = InferSelectModel<typeof card>;
 export type CreateCard = InferInsertModel<typeof card>;
 export type UpdateCard = Partial<CreateCard>;
+
+export const game = pgTable("game", {
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+  startedAt: timestamp("started_at").notNull(),
+  endedAt: timestamp("ended_at"),
+});
+
+export const gameRelations = relations(game, ({ many }) => ({
+  players: many(player),
+  cards: many(card),
+}));
+
+export type CreateGame = InferInsertModel<typeof game>;
+export type Game = InferSelectModel<typeof game>;
+export type UpdateGame = Partial<CreateGame>;
+
+export const player = pgTable("player", {
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+  gameId: integer("game_id")
+    .references(() => game.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    })
+    .notNull(),
+  userId: integer("user_id")
+    .references(() => user.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    })
+    .notNull(),
+});
+
+export const playerRelations = relations(player, ({ one }) => ({
+  game: one(game, {
+    fields: [player.gameId],
+    references: [game.id],
+  }),
+}));
+
+export type CreatePlayer = InferInsertModel<typeof player>;
+export type Player = InferSelectModel<typeof player>;
+export type UpdatePlayer = Partial<CreatePlayer>;

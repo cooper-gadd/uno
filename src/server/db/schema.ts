@@ -225,6 +225,7 @@ export const gameTurn = pgTable("game_turn", {
   isSkipped: boolean("is_skipped").notNull().default(false),
   turnNumber: integer("turn_number").notNull(),
   chosenColor: cardColor("chosen_color"),
+  playedAt: timestamp("played_at").notNull().defaultNow(),
 });
 
 export const gameTurnRelations = relations(gameTurn, ({ one }) => ({

@@ -14,6 +14,7 @@ import {
   varchar,
   pgTable,
   pgEnum,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -117,15 +118,23 @@ export type Card = InferSelectModel<typeof card>;
 export type CreateCard = InferInsertModel<typeof card>;
 export type UpdateCard = Partial<CreateCard>;
 
+export const gameDirection = pgEnum("direction", [
+  "clockwise",
+  "counter_clockwise",
+]);
+
+export const gameStatus = pgEnum("status", ["waiting", "active", "finished"]);
+
 export const game = pgTable("game", {
   id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   startedAt: timestamp("started_at").notNull(),
   endedAt: timestamp("ended_at"),
+  direction: gameDirection("direction").notNull(),
+  status: gameStatus("status").notNull(),
 });
 
 export const gameRelations = relations(game, ({ many }) => ({
   players: many(player),
-  cards: many(card),
 }));
 
 export type CreateGame = InferInsertModel<typeof game>;
@@ -146,6 +155,9 @@ export const player = pgTable("player", {
       onUpdate: "cascade",
     })
     .notNull(),
+  turnOrder: integer("turn_order").notNull(),
+  hasCalledUno: boolean("has_called_uno").notNull().default(false),
+  currentTurn: boolean("current_turn").notNull().default(false),
 });
 
 export const playerRelations = relations(player, ({ one }) => ({
@@ -158,3 +170,78 @@ export const playerRelations = relations(player, ({ one }) => ({
 export type CreatePlayer = InferInsertModel<typeof player>;
 export type Player = InferSelectModel<typeof player>;
 export type UpdatePlayer = Partial<CreatePlayer>;
+
+export const playerHand = pgTable("player_hand", {
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+  playerId: integer("player_id")
+    .references(() => player.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    })
+    .notNull(),
+  cardId: integer("card_id")
+    .references(() => card.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    })
+    .notNull(),
+});
+
+export const playerHandRelations = relations(playerHand, ({ one }) => ({
+  player: one(player, {
+    fields: [playerHand.playerId],
+    references: [player.id],
+  }),
+  card: one(card, {
+    fields: [playerHand.cardId],
+    references: [card.id],
+  }),
+}));
+
+export type CreatePlayerHand = InferInsertModel<typeof playerHand>;
+export type PlayerHand = InferSelectModel<typeof playerHand>;
+export type UpdatePlayerHand = Partial<CreatePlayerHand>;
+
+export const gameTurn = pgTable("game_turn", {
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+  gameId: integer("game_id")
+    .references(() => game.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    })
+    .notNull(),
+  playerId: integer("player_id")
+    .references(() => player.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    })
+    .notNull(),
+  cardId: integer("card_id")
+    .references(() => card.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    })
+    .notNull(),
+  isSkipped: boolean("is_skipped").notNull().default(false),
+  turnNumber: integer("turn_number").notNull(),
+  chosenColor: cardColor("chosen_color"),
+});
+
+export const gameTurnRelations = relations(gameTurn, ({ one }) => ({
+  game: one(game, {
+    fields: [gameTurn.gameId],
+    references: [game.id],
+  }),
+  player: one(player, {
+    fields: [gameTurn.playerId],
+    references: [player.id],
+  }),
+  card: one(card, {
+    fields: [gameTurn.cardId],
+    references: [card.id],
+  }),
+}));
+
+export type CreateGameTurn = InferInsertModel<typeof gameTurn>;
+export type GameTurn = InferSelectModel<typeof gameTurn>;
+export type UpdateGameTurn = Partial<CreateGameTurn>;

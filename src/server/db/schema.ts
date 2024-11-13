@@ -13,6 +13,7 @@ import {
   timestamp,
   varchar,
   pgTable,
+  pgEnum,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -77,3 +78,41 @@ export const sessionRelations = relations(session, ({ one }) => ({
 export type CreateSession = InferInsertModel<typeof session>;
 export type Session = InferSelectModel<typeof session>;
 export type UpdateSession = Partial<CreateSession>;
+
+export const cardColor = pgEnum("color", [
+  "red",
+  "green",
+  "blue",
+  "yellow",
+  "wild",
+]);
+
+export const cardType = pgEnum("type", [
+  "number",
+  "draw_two",
+  "reverse",
+  "skip",
+  "wild",
+  "wild_draw_four",
+  "wild_shuffle_hands",
+  "wild_customizable",
+]);
+
+export const card = pgTable(
+  "card",
+  {
+    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    color: cardColor("color").notNull(),
+    type: cardType("type").notNull(),
+    value: integer("value"),
+  },
+  (table) => {
+    return {
+      indexOnId: index("card_id_index").on(table.id),
+    };
+  },
+);
+
+export type Card = InferSelectModel<typeof card>;
+export type CreateCard = InferInsertModel<typeof card>;
+export type UpdateCard = Partial<CreateCard>;

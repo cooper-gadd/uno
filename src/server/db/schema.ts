@@ -29,12 +29,12 @@ export const user = pgTable(
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     name: varchar("name", { length: 256 }),
-    email: varchar("email", { length: 256 }).unique(),
+    username: varchar("username", { length: 256 }).unique(),
     password: varchar("password", { length: 256 }),
   },
   (table) => {
     return {
-      indexOnEmail: index("user_email_index").on(table.email),
+      indexOnUsername: index("user_username_index").on(table.username),
       indexOnPassword: index("user_password_index").on(table.password),
     };
   },
